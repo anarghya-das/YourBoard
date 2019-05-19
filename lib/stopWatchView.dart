@@ -6,7 +6,8 @@ class StopWatchPage extends StatefulWidget {
   _StopWatchPageState createState() => _StopWatchPageState();
 }
 
-class _StopWatchPageState extends State<StopWatchPage> {
+class _StopWatchPageState extends State<StopWatchPage>
+    with AutomaticKeepAliveClientMixin {
   int _hours = 0;
   int _minutes = 0;
   int _seconds = 0;
@@ -16,6 +17,7 @@ class _StopWatchPageState extends State<StopWatchPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -122,4 +124,7 @@ class _StopWatchPageState extends State<StopWatchPage> {
     });
     return all;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -6,7 +6,8 @@ class TimerPage extends StatefulWidget {
   _TimerPageState createState() => _TimerPageState();
 }
 
-class _TimerPageState extends State<TimerPage> {
+class _TimerPageState extends State<TimerPage>
+    with AutomaticKeepAliveClientMixin {
   static const duration = const Duration(milliseconds: 1);
   int _seconds = 0;
   int _milliseconds = 0;
@@ -28,17 +29,18 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   void dispose() {
-    print("dispose asdasd");
     if (_timer != null) {
       _timer.cancel();
     }
     super.dispose();
   }
 
-// "$_minutes:$_seconds.$_milliseconds",
-//           style: TextStyle(fontSize: 60),
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Center(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
