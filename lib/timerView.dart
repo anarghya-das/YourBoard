@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'tabPage.dart';
 
 class TimerPage extends StatefulWidget {
   @override
@@ -7,7 +9,7 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   static const duration = const Duration(milliseconds: 1);
   int _seconds = 0;
   int _milliseconds = 0;
@@ -17,6 +19,29 @@ class _TimerPageState extends State<TimerPage>
   Stopwatch _stopwatch = new Stopwatch();
   Timer _timer;
   IconData _defIcon = Icons.play_circle_outline;
+  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var ios = IOSInitializationSettings();
+    var initSettings = InitializationSettings(android, ios);
+    _flutterLocalNotificationsPlugin.initialize(initSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future<void> onSelectNotification(String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+    }
+    await Navigator.maybePop(
+      context,
+      MaterialPageRoute(builder: (context) => TabPage()),
+    );
+  }
 
   void _update() {
     setState(() {
@@ -32,7 +57,26 @@ class _TimerPageState extends State<TimerPage>
     if (_timer != null) {
       _timer.cancel();
     }
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint("State: ${state.toString()}");
+    switch (state) {
+      case AppLifecycleState.paused:
+        showNotification();
+        break;
+      case AppLifecycleState.resumed:
+        break;
+      case AppLifecycleState.inactive:
+        print("paused");
+        break;
+      case AppLifecycleState.suspending:
+        print("paused");
+        break;
+    }
   }
 
   @override
@@ -128,5 +172,14 @@ class _TimerPageState extends State<TimerPage>
         ),
       ],
     ));
+  }
+
+  Future showNotification() async {
+    var android = AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DISCRIPTION');
+    var ios = IOSNotificationDetails();
+    var platform = NotificationDetails(android, ios);
+    await _flutterLocalNotificationsPlugin.show(
+        0, "Timer Running", "Test", platform);
   }
 }
