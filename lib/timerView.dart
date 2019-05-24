@@ -66,7 +66,9 @@ class _TimerPageState extends State<TimerPage>
     debugPrint("State: ${state.toString()}");
     switch (state) {
       case AppLifecycleState.paused:
-        showNotification();
+        if (!_notStarted) {
+          showNotification();
+        }
         break;
       case AppLifecycleState.resumed:
         break;
@@ -176,7 +178,8 @@ class _TimerPageState extends State<TimerPage>
 
   Future showNotification() async {
     var android = AndroidNotificationDetails(
-        'channel id', 'channel NAME', 'CHANNEL DISCRIPTION');
+        'channel id', 'channel NAME', 'CHANNEL DISCRIPTION',
+        importance: Importance.Max, priority: Priority.High, playSound: false);
     var ios = IOSNotificationDetails();
     var platform = NotificationDetails(android, ios);
     await _flutterLocalNotificationsPlugin.show(

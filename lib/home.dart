@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'tabPage.dart';
+import 'ListRoot.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -112,7 +113,13 @@ class _BoardState extends State<Board> {
                         },
                         icon: Icon(Icons.timer, size: 90)),
                     IconButton(
-                        onPressed: () {}, icon: Icon(Icons.list, size: 90)),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ListRoot()));
+                        },
+                        icon: Icon(Icons.list, size: 90)),
                     IconButton(
                         onPressed: () {}, icon: Icon(Icons.cloud, size: 90)),
                     IconButton(
