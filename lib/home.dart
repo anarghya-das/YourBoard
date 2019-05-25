@@ -128,16 +128,19 @@ class _BoardState extends State<Board> {
                   ],
                 ),
               ),
-              Container(
-                  margin: EdgeInsets.only(top: 10),
-                  width: 130.0,
-                  height: 130.0,
-                  decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new NetworkImage(
-                              "https://i.imgur.com/BoN9kdC.png")))),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    
+                  },
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.transparent,
+                    child: Image.asset("images/avatar.png"),
+                  ),
+                ),
+              )
             ],
           ),
         ],
