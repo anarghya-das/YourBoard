@@ -24,8 +24,10 @@ class _ListRootState extends State<ListRoot> {
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CreateTask("", "")));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateTask("", "", 0)));
             }),
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -103,7 +105,8 @@ class _TaskListState extends State<TaskList> {
     List<Task> completedTasks = List();
     List<List<Task>> both = List();
     for (var items in jsonResponse) {
-      Task task = Task(items['title'], items['content'], items['isComplete']);
+      Task task = Task(
+          items['title'], items['content'], items['isComplete'], items['id']);
       if (task.isComplete) {
         completedTasks.add(task);
       } else {
@@ -144,6 +147,42 @@ class _TaskListState extends State<TaskList> {
           ),
           children: _completedIitems
               .map((val) => ListTile(
+                  onLongPress: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext contex) {
+                          return AlertDialog(
+                            title: Text("Confirm"),
+                            content: Text("Are you sure you want to DELETE?"),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text("Yes"),
+                                onPressed: () {
+                                  setState(() {
+                                    delete(API_URL + "${val.getId()}/");
+                                  });
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              FlatButton(
+                                child: Text("No"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  },
+                  onTap: () {
+                    var msg = Map<String, String>();
+                    msg['title'] = val.getTitle();
+                    msg['id'] = "${val.getId()}";
+                    msg['isComplete'] = "false";
+                    setState(() {
+                      put(API_URL + "${val.getId()}/", body: msg);
+                    });
+                  },
                   leading: Icon(
                     Icons.check_box,
                     color: Colors.black,
@@ -164,26 +203,21 @@ class _TaskListState extends State<TaskList> {
           key: Key(_items[i].title),
           direction: DismissDirection.startToEnd,
           onDismissed: (direction) {
+            var msg = Map<String, String>();
+            msg['title'] = _items[i].getTitle();
+            msg['id'] = "${_items[i].getId()}";
+            msg['isComplete'] = "true";
             setState(() {
-              _items.removeAt(i);
+              put(API_URL + "${_items[i].getId()}/", body: msg);
             });
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text("Dismissed number:${i + 1}"),
-              action: SnackBarAction(
-                label: "UNDO",
-                onPressed: () {
-                  setState(() {});
-                },
-              ),
-            ));
           },
           child: ListTile(
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            CreateTask(_items[i].title, _items[i].content)));
+                        builder: (context) => CreateTask(
+                            _items[i].title, _items[i].content, _items[i].id)));
               },
               leading: Icon(
                 Icons.check_box_outline_blank,

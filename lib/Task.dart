@@ -1,9 +1,10 @@
 class Task {
+  int id;
   String title;
   String content;
   bool isComplete;
 
-  Task(this.title, this.content, this.isComplete);
+  Task(this.title, this.content, this.isComplete, this.id);
 
   String getTitle() {
     return this.title;
@@ -14,6 +15,10 @@ class Task {
   }
 
   bool getStatus() {
-    return isComplete;
+    return this.isComplete;
+  }
+
+  int getId() {
+    return this.id;
   }
 }
