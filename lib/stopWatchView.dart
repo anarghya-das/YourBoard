@@ -211,7 +211,14 @@ class _StopWatchPageState extends State<StopWatchPage>
           _second1 = i;
         }
       }
-      _playVisibility = true;
+      if (_hour0 != "0" ||
+          _hour1 != "0" ||
+          _minute0 != "0" ||
+          _minute1 != "0" ||
+          _second0 != "0" ||
+          _second1 != "0") {
+        _playVisibility = true;
+      }
     }
   }
 
