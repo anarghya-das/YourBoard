@@ -17,6 +17,7 @@ class _StopWatchPageState extends State<StopWatchPage>
   bool _isSelectedH = false;
   bool _isSelectedM = false;
   bool _isSelectedS = false;
+  bool _playVisibility = false;
 
   TextStyle _check(String time) {
     if (time == "hour" && _isSelectedH) {
@@ -104,9 +105,15 @@ class _StopWatchPageState extends State<StopWatchPage>
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("H", style: TextStyle(fontSize: 20)),
-                Text("H", style: TextStyle(fontSize: 20)),
-                Text("H", style: TextStyle(fontSize: 20)),
+                Padding(
+                  padding: const EdgeInsets.only(right: 100.0),
+                  child: Text("H", style: TextStyle(fontSize: 20)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 100.0),
+                  child: Text("M", style: TextStyle(fontSize: 20)),
+                ),
+                Text("S", style: TextStyle(fontSize: 20)),
               ],
             ),
             GridView.count(
@@ -117,6 +124,21 @@ class _StopWatchPageState extends State<StopWatchPage>
               crossAxisSpacing: 50.0,
               mainAxisSpacing: 0.0,
               children: _fillGrid(),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0, right: 27),
+              child: Visibility(
+                visible: _playVisibility,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.play_circle_filled,
+                    size: 60,
+                  ),
+                  onPressed: () {
+                    //TODO: Start the Countdown
+                  },
+                ),
+              ),
             )
           ],
         ),
@@ -146,6 +168,14 @@ class _StopWatchPageState extends State<StopWatchPage>
         } else {
           _second1 = "0";
         }
+      }
+      if (_hour0 == "0" &&
+          _hour1 == "0" &&
+          _minute0 == "0" &&
+          _minute1 == "0" &&
+          _second0 == "0" &&
+          _second1 == "0") {
+        _playVisibility = false;
       }
     } else {
       if (_isSelectedH) {
@@ -181,6 +211,7 @@ class _StopWatchPageState extends State<StopWatchPage>
           _second1 = i;
         }
       }
+      _playVisibility = true;
     }
   }
 
