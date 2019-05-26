@@ -212,6 +212,7 @@ class _BoardState extends State<Board> {
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {
+          _storedImage = File(snapshot.data.path);
           _storePreference(snapshot.data.path);
           return CircleAvatar(
             backgroundImage: FileImage(snapshot.data),
@@ -220,14 +221,14 @@ class _BoardState extends State<Board> {
             maxRadius: 70,
           );
         } else {
-          return _checkImage();
+          return _checkImage(_storedImage);
         }
       },
     );
   }
 
-  Widget _checkImage() {
-    return _storedImage == null
+  Widget _checkImage(File imgFile) {
+    return imgFile == null
         ? CircleAvatar(
             backgroundImage: ExactAssetImage('images/avatar.png'),
             backgroundColor: Colors.transparent,
@@ -235,7 +236,7 @@ class _BoardState extends State<Board> {
             maxRadius: 70,
           )
         : CircleAvatar(
-            backgroundImage: FileImage(_storedImage),
+            backgroundImage: FileImage(imgFile),
             backgroundColor: Colors.transparent,
             minRadius: 10,
             maxRadius: 70,
