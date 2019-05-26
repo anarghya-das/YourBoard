@@ -4,8 +4,10 @@ import 'Task.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'CreateTask.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const String API_URL = "http://10.0.2.2:8000/api/list/";
+const String PREFERENCE_TITLE = "ListTitle";
 
 class ListRoot extends StatefulWidget {
   @override
@@ -13,8 +15,33 @@ class ListRoot extends StatefulWidget {
 }
 
 class _ListRootState extends State<ListRoot> {
+  TextEditingController _textEditingController;
+  String title = "Enter List Title";
+
+  Future<String> _getListTitle() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString(PREFERENCE_TITLE);
+    if (name == null) {
+      return "Enter List Title";
+    } else {
+      return name;
+    }
+  }
+
+  Future<void> _loadTitle() async {
+    title = await _getListTitle();
+    setState(() {});
+  }
+
+  Future<void> _storeTitle(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(PREFERENCE_TITLE, value);
+  }
+
   @override
   void initState() {
+    _textEditingController = TextEditingController();
+    _loadTitle();
     super.initState();
   }
 
@@ -32,7 +59,41 @@ class _ListRootState extends State<ListRoot> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Title"),
+          title: GestureDetector(
+            child: Text(title),
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext contex) {
+                    return AlertDialog(
+                      title: Text("Rename List"),
+                      content: TextField(
+                        controller: _textEditingController,
+                        decoration:
+                            InputDecoration(hintText: "Enter your title"),
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("Confirm"),
+                          onPressed: () {
+                            _storeTitle(_textEditingController.text);
+                            setState(() {
+                              title = _textEditingController.text;
+                            });
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        FlatButton(
+                          child: Text("Cancel"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  });
+            },
+          ),
           elevation: 0,
         ),
         body: TaskList());
@@ -234,9 +295,5 @@ class _TaskListState extends State<TaskList> {
                       ),
                     )));
     }
-  }
-
-  Widget makeCompleteList() {
-    return null;
   }
 }
