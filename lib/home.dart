@@ -3,6 +3,7 @@ import 'tabPage.dart';
 import 'ListRoot.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -84,6 +85,34 @@ class Board extends StatefulWidget {
 
 class _BoardState extends State<Board> {
   Future<File> _profileImage;
+  File _storedImage;
+
+  Future<File> _getStoredFile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final imageFile = prefs.getString('imagePath');
+    if (imageFile == null) {
+      return null;
+    } else {
+      File f = File(imageFile);
+      bool result = await f.exists();
+      if (result) {
+        return f;
+      } else {
+        return null;
+      }
+    }
+  }
+
+  Future<void> _loadImage() async {
+    _storedImage = await _getStoredFile();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    _loadImage();
+    super.initState();
+  }
 
   void getImage(ImageSource source) {
     setState(() {
@@ -183,31 +212,38 @@ class _BoardState extends State<Board> {
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {
+          _storePreference(snapshot.data.path);
           return CircleAvatar(
             backgroundImage: FileImage(snapshot.data),
             backgroundColor: Colors.transparent,
             minRadius: 10,
             maxRadius: 70,
           );
-        } else if (snapshot.error != null) {
-          return Material(
-              elevation: 1.0,
-              shape: CircleBorder(),
-              color: Colors.transparent,
-              child: Image.asset(
-                "images/avatar.png",
-                width: 130,
-                height: 130,
-              ));
         } else {
-          return CircleAvatar(
+          return _checkImage();
+        }
+      },
+    );
+  }
+
+  Widget _checkImage() {
+    return _storedImage == null
+        ? CircleAvatar(
             backgroundImage: ExactAssetImage('images/avatar.png'),
             backgroundColor: Colors.transparent,
             minRadius: 10,
             maxRadius: 70,
+          )
+        : CircleAvatar(
+            backgroundImage: FileImage(_storedImage),
+            backgroundColor: Colors.transparent,
+            minRadius: 10,
+            maxRadius: 70,
           );
-        }
-      },
-    );
+  }
+
+  Future<void> _storePreference(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("imagePath", value);
   }
 }
