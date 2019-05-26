@@ -45,6 +45,7 @@ class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
             ],
             controller: _tabController,
             labelColor: Colors.black,
+            unselectedLabelColor: Colors.blueAccent,
             indicatorSize: TabBarIndicatorSize.label,
           ),
         ));

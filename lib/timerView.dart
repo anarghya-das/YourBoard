@@ -73,10 +73,8 @@ class _TimerPageState extends State<TimerPage>
       case AppLifecycleState.resumed:
         break;
       case AppLifecycleState.inactive:
-        print("paused");
         break;
       case AppLifecycleState.suspending:
-        print("paused");
         break;
     }
   }
@@ -183,6 +181,6 @@ class _TimerPageState extends State<TimerPage>
     var ios = IOSNotificationDetails();
     var platform = NotificationDetails(android, ios);
     await _flutterLocalNotificationsPlugin.show(
-        0, "Timer Running", "Test", platform);
+        0, "Timer Running", null, platform);
   }
 }

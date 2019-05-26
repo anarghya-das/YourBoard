@@ -8,104 +8,180 @@ class StopWatchPage extends StatefulWidget {
 
 class _StopWatchPageState extends State<StopWatchPage>
     with AutomaticKeepAliveClientMixin {
-  int _hours = 0;
-  int _minutes = 0;
-  int _seconds = 0;
-  Color _hourColor = Colors.black;
-  Color _minuteColor = Colors.black;
-  Color _secondColor = Colors.black;
+  String _hour0 = "0",
+      _hour1 = "0",
+      _minute0 = "0",
+      _minute1 = "0",
+      _second0 = "0",
+      _second1 = "0";
+  bool _isSelectedH = false;
+  bool _isSelectedM = false;
+  bool _isSelectedS = false;
+
+  TextStyle _check(String time) {
+    if (time == "hour" && _isSelectedH) {
+      return TextStyle(color: Colors.blueAccent);
+    } else if (time == "minute" && _isSelectedM) {
+      return TextStyle(color: Colors.blueAccent);
+    } else if (time == "second" && _isSelectedS) {
+      return TextStyle(color: Colors.blueAccent);
+    }
+    return null;
+  }
+
+  void _changeBool(String time) {
+    switch (time) {
+      case "hour":
+        _isSelectedH = true;
+        _isSelectedM = false;
+        _isSelectedS = false;
+        break;
+      case "minute":
+        _isSelectedH = false;
+        _isSelectedM = true;
+        _isSelectedS = false;
+        break;
+      case "second":
+        _isSelectedH = false;
+        _isSelectedM = false;
+        _isSelectedS = true;
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          RichText(
-            text: TextSpan(
-                style: TextStyle(
-                  fontSize: 80.0,
-                  color: Colors.black,
-                ),
-                children: <TextSpan>[
-                  _hours < 10
-                      ? TextSpan(
-                          text: "0$_hours",
-                          style: TextStyle(color: _hourColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              setState(() {
-                                _hourColor = Colors.blue;
-                                _minuteColor = Colors.black;
-                                _secondColor = Colors.black;
-                              });
-                            })
-                      : TextSpan(
-                          text: "$_hours",
-                          style: TextStyle(color: _hourColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              setState(() {
-                                _hourColor = Colors.blue;
-                                _minuteColor = Colors.black;
-                                _secondColor = Colors.black;
-                              });
-                            }),
-                  TextSpan(
-                    text: ":",
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            RichText(
+              text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 80.0,
+                    color: Colors.black,
                   ),
-                  _minutes < 10
-                      ? TextSpan(
-                          text: "0$_minutes",
-                          style: TextStyle(color: _minuteColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              setState(() {
-                                _minuteColor = Colors.blue;
-                                _hourColor = Colors.black;
-                                _secondColor = Colors.black;
-                              });
-                            })
-                      : TextSpan(text: "$_minutes"),
-                  TextSpan(
-                    text: ":",
-                  ),
-                  _seconds < 10
-                      ? TextSpan(
-                          text: "0$_seconds",
-                          style: TextStyle(color: _secondColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              setState(() {
-                                _secondColor = Colors.blue;
-                                _minuteColor = Colors.black;
-                                _hourColor = Colors.black;
-                              });
-                            })
-                      : TextSpan(
-                          text: "$_seconds",
-                          style: TextStyle(color: _secondColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              setState(() {
-                                _secondColor = Colors.blue;
-                              });
-                            }),
-                ]),
-          ),
-          GridView.count(
-            physics: BouncingScrollPhysics(),
-            shrinkWrap: true,
-            padding: EdgeInsets.only(left: 30, top: 30, right: 30),
-            crossAxisCount: 3,
-            crossAxisSpacing: 50.0,
-            mainAxisSpacing: 0.0,
-            children: _fillGrid(),
-          )
-        ],
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: "$_hour0$_hour1",
+                        style: _check("hour"),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              _changeBool("hour");
+                            });
+                          }),
+                    TextSpan(
+                      text: ":",
+                    ),
+                    TextSpan(
+                        text: "$_minute0$_minute1",
+                        style: _check("minute"),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              _changeBool("minute");
+                            });
+                          }),
+                    TextSpan(
+                      text: ":",
+                    ),
+                    TextSpan(
+                        text: "$_second0$_second1",
+                        style: _check("second"),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              _changeBool("second");
+                            });
+                          })
+                  ]),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("H", style: TextStyle(fontSize: 20)),
+                Text("H", style: TextStyle(fontSize: 20)),
+                Text("H", style: TextStyle(fontSize: 20)),
+              ],
+            ),
+            GridView.count(
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              padding: EdgeInsets.only(left: 30, top: 30, right: 30),
+              crossAxisCount: 3,
+              crossAxisSpacing: 50.0,
+              mainAxisSpacing: 0.0,
+              children: _fillGrid(),
+            )
+          ],
+        ),
       ),
     );
+  }
+
+  void _updateTime(String i) {
+    if (i == "DEL") {
+      if (_isSelectedH) {
+        if (_hour0 != "0") {
+          _hour0 = "0";
+        } else {
+          _hour1 = "0";
+        }
+      }
+      if (_isSelectedM) {
+        if (_minute0 != "0") {
+          _minute0 = "0";
+        } else {
+          _minute1 = "0";
+        }
+      }
+      if (_isSelectedS) {
+        if (_second0 != "0") {
+          _second0 = "0";
+        } else {
+          _second1 = "0";
+        }
+      }
+    } else {
+      if (_isSelectedH) {
+        if (_hour0 != "0" && _hour1 != "0") {
+          return;
+        } else if (_hour1 == "0") {
+          _hour1 = i;
+        } else {
+          String _temp = _hour1;
+          _hour0 = _temp;
+          _hour1 = i;
+        }
+      }
+      if (_isSelectedM) {
+        if (_minute0 != "0" && _minute1 != "0") {
+          return;
+        } else if (_minute1 == "0") {
+          _minute1 = i;
+        } else {
+          String _temp = _minute1;
+          _minute0 = _temp;
+          _minute1 = i;
+        }
+      }
+      if (_isSelectedS) {
+        if (_second0 != "0" && _second1 != "0") {
+          return;
+        } else if (_second1 == "0") {
+          _second1 = i;
+        } else {
+          String _temp = _second1;
+          _second0 = _temp;
+          _second1 = i;
+        }
+      }
+    }
   }
 
   List<Widget> _fillGrid() {
@@ -116,7 +192,11 @@ class _StopWatchPageState extends State<StopWatchPage>
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
           color: Colors.white,
-          onPressed: () {},
+          onPressed: () {
+            setState(() {
+              _updateTime(i);
+            });
+          },
           child: Text(
             "$i",
             style: TextStyle(fontSize: i == "DEL" ? 28 : 40),
