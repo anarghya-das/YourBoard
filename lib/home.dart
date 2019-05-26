@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'tabPage.dart';
 import 'ListRoot.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Home extends StatefulWidget {
   @override
@@ -81,6 +83,38 @@ class Board extends StatefulWidget {
 }
 
 class _BoardState extends State<Board> {
+  Future<File> _profileImage;
+
+  void getImage(ImageSource source) {
+    setState(() {
+      showDialog(
+          context: context,
+          builder: (BuildContext contex) {
+            return AlertDialog(
+              title: Text("Replace Image"),
+              content: Text("Are you sure you want to change the image?"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Yes"),
+                  onPressed: () {
+                    setState(() {
+                      _profileImage = ImagePicker.pickImage(source: source);
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text("No"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -131,20 +165,49 @@ class _BoardState extends State<Board> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
-                  onTap: () {
-                    
-                  },
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.transparent,
-                    child: Image.asset("images/avatar.png"),
-                  ),
-                ),
+                    onTap: () {
+                      getImage(ImageSource.gallery);
+                    },
+                    child: showImage()),
               )
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget showImage() {
+    return FutureBuilder(
+      future: _profileImage,
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.data != null) {
+          return CircleAvatar(
+            backgroundImage: FileImage(snapshot.data),
+            backgroundColor: Colors.transparent,
+            minRadius: 10,
+            maxRadius: 70,
+          );
+        } else if (snapshot.error != null) {
+          return Material(
+              elevation: 1.0,
+              shape: CircleBorder(),
+              color: Colors.transparent,
+              child: Image.asset(
+                "images/avatar.png",
+                width: 130,
+                height: 130,
+              ));
+        } else {
+          return CircleAvatar(
+            backgroundImage: ExactAssetImage('images/avatar.png'),
+            backgroundColor: Colors.transparent,
+            minRadius: 10,
+            maxRadius: 70,
+          );
+        }
+      },
     );
   }
 }
