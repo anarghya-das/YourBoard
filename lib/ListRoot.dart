@@ -219,8 +219,19 @@ class _TaskListState extends State<TaskList> {
                               FlatButton(
                                 child: Text("Yes"),
                                 onPressed: () {
-                                  setState(() {
-                                    delete(API_URL + "${val.getId()}/");
+                                  delete(API_URL + "${val.getId()}/")
+                                      .then((Response response) {
+                                    final int statusCode = response.statusCode;
+                                    if (statusCode < 200 || statusCode > 400) {
+                                    } else {
+                                      setState(() {});
+                                      Scaffold.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content:
+                                            Text("Task Sucessfully Deleted!"),
+                                        duration: Duration(seconds: 1),
+                                      ));
+                                    }
                                   });
                                   Navigator.of(context).pop();
                                 },
@@ -240,9 +251,18 @@ class _TaskListState extends State<TaskList> {
                     msg['title'] = val.getTitle();
                     msg['id'] = "${val.getId()}";
                     msg['isComplete'] = "false";
-                    setState(() {
-                      put(API_URL + "${val.getId()}/", body: msg);
-                    });
+                    put(API_URL + "${val.getId()}/", body: msg)
+                      ..then((Response response) {
+                        final int statusCode = response.statusCode;
+                        if (statusCode < 200 || statusCode > 400) {
+                        } else {
+                          setState(() {});
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("Task Marked Incomplete!"),
+                            duration: Duration(seconds: 1),
+                          ));
+                        }
+                      });
                   },
                   leading: Icon(
                     Icons.check_box,
@@ -268,8 +288,17 @@ class _TaskListState extends State<TaskList> {
             msg['title'] = _items[i].getTitle();
             msg['id'] = "${_items[i].getId()}";
             msg['isComplete'] = "true";
-            setState(() {
-              put(API_URL + "${_items[i].getId()}/", body: msg);
+            put(API_URL + "${_items[i].getId()}/", body: msg)
+                .then((Response response) {
+              final int statusCode = response.statusCode;
+              if (statusCode < 200 || statusCode > 400) {
+              } else {
+                setState(() {});
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Task Marked Completed!"),
+                  duration: Duration(seconds: 1),
+                ));
+              }
             });
           },
           child: ListTile(
