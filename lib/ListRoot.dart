@@ -104,6 +104,14 @@ class _ListRootState extends State<ListRoot> {
                       builder: (BuildContext contex) {
                         return AlertDialog(
                             title: Text("Help"),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text("Ok"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
                             content: Text("To create a task, use the button at the bottom of the page.\n\n" +
                                 "To edit/update the a task, tap on the task.\n\n"
                                     "To mark a task as complete, swipe towards the right." +
