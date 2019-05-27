@@ -27,11 +27,11 @@ class _StopWatchPageState extends State<StopWatchPage>
 
   TextStyle _check(String time) {
     if (time == "hour" && _isSelectedH) {
-      return TextStyle(color: Colors.blueAccent);
+      return TextStyle(color: Colors.grey);
     } else if (time == "minute" && _isSelectedM) {
-      return TextStyle(color: Colors.blueAccent);
+      return TextStyle(color: Colors.grey);
     } else if (time == "second" && _isSelectedS) {
-      return TextStyle(color: Colors.blueAccent);
+      return TextStyle(color: Colors.grey);
     }
     return null;
   }

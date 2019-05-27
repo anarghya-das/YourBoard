@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Your Board',
+      theme: ThemeData(primaryColor: Colors.white, accentColor: Colors.black),
       home: Home(),
     );
   }

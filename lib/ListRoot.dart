@@ -278,7 +278,7 @@ class _TaskListState extends State<TaskList> {
       return Dismissible(
           background: Container(
             alignment: Alignment.centerLeft,
-            color: Colors.blueAccent,
+            color: Colors.black,
             child: Icon(Icons.check, color: Colors.white),
           ),
           key: Key(_items[i].title),

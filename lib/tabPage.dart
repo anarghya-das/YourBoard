@@ -15,6 +15,11 @@ class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: _tabPages.length, vsync: this);
+    _tabController.addListener(_handleSelected);
+  }
+
+  void _handleSelected() {
+    setState(() {});
   }
 
   @override
@@ -30,6 +35,9 @@ class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
+          title: _tabController.index == 0
+              ? Text("Stopwatch")
+              : Text("Countdown Timer"),
         ),
         body: TabBarView(
           children: _tabPages,
@@ -40,12 +48,12 @@ class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
           child: TabBar(
             indicatorColor: Colors.black,
             tabs: <Widget>[
-              Tab(icon: Icon(Icons.timer), text: "Timer"),
-              Tab(icon: Icon(Icons.timer), text: "StopWatch"),
+              Tab(icon: Icon(Icons.timer), text: "Stopwatch"),
+              Tab(icon: Icon(Icons.timer), text: "Countdown Timer"),
             ],
             controller: _tabController,
             labelColor: Colors.black,
-            unselectedLabelColor: Colors.blueAccent,
+            unselectedLabelColor: Colors.grey,
             indicatorSize: TabBarIndicatorSize.label,
           ),
         ));

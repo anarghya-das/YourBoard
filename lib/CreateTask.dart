@@ -22,7 +22,9 @@ class _CreateTaskState extends State<CreateTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          elevation: 0,
           centerTitle: true,
           title: heading.isEmpty ? Text("Create Task") : Text("Update Task"),
         ),
@@ -118,7 +120,10 @@ class _FormState extends State<Form> {
               }
             }
           },
-          child: heading.isEmpty ? Text("Create") : Text("Update"),
+          child: heading.isEmpty
+              ? Text("Create", style: TextStyle(color: Colors.white))
+              : Text("Update", style: TextStyle(color: Colors.white)),
+          color: Colors.black,
         )
       ],
     );

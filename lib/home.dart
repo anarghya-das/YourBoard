@@ -18,59 +18,8 @@ class _HomeState extends State<Home> {
           elevation: 1,
           centerTitle: true,
           title: Text(
-            "YB",
-            style: TextStyle(fontSize: 40),
-          ),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.settings,
-              ),
-            )
-          ],
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Text(
-                  'Your Board',
-                  style: TextStyle(color: Colors.white, fontSize: 40),
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                ),
-              ),
-              ListTile(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => TabPage()));
-                },
-                leading: Icon(
-                  Icons.timer,
-                  color: Colors.black,
-                  size: 40,
-                ),
-                title: Text(
-                  "Timer/Stopwatch",
-                  style: TextStyle(fontSize: 25),
-                ),
-              ),
-              ListTile(
-                onTap: () {},
-                leading: Icon(
-                  Icons.calendar_today,
-                  color: Colors.black,
-                  size: 40,
-                ),
-                title: Text(
-                  "Calendar",
-                  style: TextStyle(fontSize: 25),
-                ),
-              )
-            ],
+            "YourBoard",
+            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
           ),
         ),
         backgroundColor: Colors.white,
