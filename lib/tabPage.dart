@@ -31,7 +31,7 @@ class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
@@ -44,15 +44,15 @@ class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
           controller: _tabController,
         ),
         bottomNavigationBar: Material(
-          color: Colors.white,
+          color: Theme.of(context).primaryColor,
           child: TabBar(
-            indicatorColor: Colors.black,
+            indicatorColor: Theme.of(context).accentColor,
             tabs: <Widget>[
               Tab(icon: Icon(Icons.timer), text: "Stopwatch"),
               Tab(icon: Icon(Icons.timer), text: "Countdown Timer"),
             ],
             controller: _tabController,
-            labelColor: Colors.black,
+            labelColor: Theme.of(context).accentColor,
             unselectedLabelColor: Colors.grey,
             indicatorSize: TabBarIndicatorSize.label,
           ),

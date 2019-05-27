@@ -72,7 +72,7 @@ class _StopWatchPageState extends State<StopWatchPage>
                   text: TextSpan(
                       style: TextStyle(
                         fontSize: 80.0,
-                        color: Colors.black,
+                        color: Theme.of(context).accentColor,
                       ),
                       children: <TextSpan>[
                         TextSpan(
@@ -245,7 +245,7 @@ class _StopWatchPageState extends State<StopWatchPage>
     return TextSpan(
         style: TextStyle(
           fontSize: 60.0,
-          color: Colors.black,
+          color: Theme.of(context).accentColor,
         ),
         children: <TextSpan>[
           _hourText,
@@ -340,7 +340,7 @@ class _StopWatchPageState extends State<StopWatchPage>
       all.add(FlatButton(
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
-          color: Colors.white,
+          color: Theme.of(context).primaryColor,
           onPressed: () {
             setState(() {
               _updateTime(i);

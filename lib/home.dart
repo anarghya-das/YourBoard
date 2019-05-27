@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
             style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         body: Board());
   }
 }

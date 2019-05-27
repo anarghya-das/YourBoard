@@ -22,7 +22,7 @@ class _CreateTaskState extends State<CreateTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
@@ -84,47 +84,48 @@ class _FormState extends State<Form> {
           ),
         ),
         RaisedButton(
-          onPressed: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-            var msg = Map<String, String>();
-            String _title = _headingController.text;
-            String _content = _bodyController.text;
-            if (_title.isEmpty && _content.isEmpty) {
-              Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text("Both Fields cannot be empty"),
-              ));
-            } else {
-              msg['title'] = _title;
-              msg['content'] = _content;
-              if (heading.isEmpty) {
-                post(
-                  API_URL,
-                  body: msg,
-                ).then((Response response) {
-                  final int statusCode = response.statusCode;
-                  if (statusCode < 200 || statusCode > 400) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("Server Error! :("),
-                    ));
-                  } else {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("Created!"),
-                    ));
-                    Navigator.pop(context);
-                  }
-                });
+            onPressed: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+              var msg = Map<String, String>();
+              String _title = _headingController.text;
+              String _content = _bodyController.text;
+              if (_title.isEmpty && _content.isEmpty) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Both Fields cannot be empty"),
+                ));
               } else {
-                msg['id'] = "$id";
-                put(API_URL + "$id/", body: msg);
-                Navigator.pop(context);
+                msg['title'] = _title;
+                msg['content'] = _content;
+                if (heading.isEmpty) {
+                  post(
+                    API_URL,
+                    body: msg,
+                  ).then((Response response) {
+                    final int statusCode = response.statusCode;
+                    if (statusCode < 200 || statusCode > 400) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("Server Error! :("),
+                      ));
+                    } else {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("Created!"),
+                      ));
+                      Navigator.pop(context);
+                    }
+                  });
+                } else {
+                  msg['id'] = "$id";
+                  put(API_URL + "$id/", body: msg);
+                  Navigator.pop(context);
+                }
               }
-            }
-          },
-          child: heading.isEmpty
-              ? Text("Create", style: TextStyle(color: Colors.white))
-              : Text("Update", style: TextStyle(color: Colors.white)),
-          color: Colors.black,
-        )
+            },
+            child: heading.isEmpty
+                ? Text("Create",
+                    style: TextStyle(color: Theme.of(context).primaryColor))
+                : Text("Update",
+                    style: TextStyle(color: Theme.of(context).primaryColor)),
+            color: Theme.of(context).accentColor)
       ],
     );
   }

@@ -56,7 +56,7 @@ class _ListRootState extends State<ListRoot> {
                   MaterialPageRoute(
                       builder: (context) => CreateTask("", "", 0)));
             }),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
           centerTitle: true,
           title: GestureDetector(
@@ -149,7 +149,7 @@ class _TaskListState extends State<TaskList> {
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
                         child: CircularProgressIndicator(
-                          backgroundColor: Colors.black,
+                          backgroundColor: Theme.of(context).accentColor,
                         ),
                       ),
                     ),
@@ -229,7 +229,7 @@ class _TaskListState extends State<TaskList> {
         return ExpansionTile(
           title: Text(
             "Completed",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Theme.of(context).accentColor),
           ),
           children: _completedIitems
               .map((val) => ListTile(
@@ -291,7 +291,7 @@ class _TaskListState extends State<TaskList> {
                   },
                   leading: Icon(
                     Icons.check_box,
-                    color: Colors.black,
+                    color: Theme.of(context).accentColor,
                   ),
                   title: Text(val.getTitle()),
                   subtitle:
@@ -303,8 +303,8 @@ class _TaskListState extends State<TaskList> {
       return Dismissible(
           background: Container(
             alignment: Alignment.centerLeft,
-            color: Colors.black,
-            child: Icon(Icons.check, color: Colors.white),
+            color: Theme.of(context).accentColor,
+            child: Icon(Icons.check, color: Theme.of(context).primaryColor),
           ),
           key: Key(_items[i].title),
           direction: DismissDirection.startToEnd,
@@ -334,12 +334,10 @@ class _TaskListState extends State<TaskList> {
                         builder: (context) => CreateTask(
                             _items[i].title, _items[i].content, _items[i].id)));
               },
-              leading: Icon(
-                Icons.check_box_outline_blank,
-                color: Colors.black,
-              ),
-              title:
-                  Text(_items[i].title, style: TextStyle(color: Colors.black)),
+              leading: Icon(Icons.check_box_outline_blank,
+                  color: Theme.of(context).accentColor),
+              title: Text(_items[i].title,
+                  style: TextStyle(color: Theme.of(context).accentColor)),
               subtitle: _items[i].content.isEmpty
                   ? null
                   : Padding(

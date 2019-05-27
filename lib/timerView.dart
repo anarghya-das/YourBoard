@@ -93,7 +93,7 @@ class _TimerPageState extends State<TimerPage>
           text: TextSpan(
               style: TextStyle(
                 fontSize: 60.0,
-                color: Colors.black,
+                color: Theme.of(context).accentColor,
               ),
               children: <TextSpan>[
                 _minutes < 10
