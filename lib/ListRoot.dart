@@ -95,6 +95,23 @@ class _ListRootState extends State<ListRoot> {
             },
           ),
           elevation: 0,
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.help),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext contex) {
+                        return AlertDialog(
+                            title: Text("Help"),
+                            content: Text("To create a task, use the button at the bottom of the page.\n\n" +
+                                "To edit/update the a task, tap on the task.\n\n"
+                                    "To mark a task as complete, swipe towards the right." +
+                                " The task will then be moved to the completed list below.\n\n" +
+                                "To delete a task, long press a task in the completed section."));
+                      });
+                }),
+          ],
         ),
         body: TaskList());
   }

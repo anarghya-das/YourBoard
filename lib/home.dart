@@ -132,11 +132,6 @@ class _BoardState extends State<Board> {
                                   builder: (context) => ListRoot()));
                         },
                         icon: Icon(Icons.list, size: 90)),
-                    IconButton(
-                        onPressed: () {}, icon: Icon(Icons.cloud, size: 90)),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.calendar_today, size: 90))
                   ],
                 ),
               ),
