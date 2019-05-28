@@ -6,12 +6,12 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'tabPage.dart';
 
-class StopWatchPage extends StatefulWidget {
+class TimerPage extends StatefulWidget {
   @override
-  _StopWatchPageState createState() => _StopWatchPageState();
+  _TimerPageState createState() => _TimerPageState();
 }
 
-class _StopWatchPageState extends State<StopWatchPage>
+class _TimerPageState extends State<TimerPage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   String _hour0 = "0",
       _hour1 = "0",
@@ -19,7 +19,6 @@ class _StopWatchPageState extends State<StopWatchPage>
       _minute1 = "0",
       _second0 = "0",
       _second1 = "0";
-  // TODO: By default seconds should be highlighted
   bool _isSelectedH = false;
   bool _isSelectedM = false;
   bool _isSelectedS = false;
@@ -267,33 +266,55 @@ class _StopWatchPageState extends State<StopWatchPage>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  size: 40,
+              Visibility(
+                visible: !isAudioPlaying,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    size: 40,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _watchHandler.cancel();
+                      _currentIndex = 0;
+                    });
+                  },
                 ),
-                onPressed: () {
-                  setState(() {
-                    if (audioPlayer != null) {
-                      audioPlayer.then((AudioPlayer val) => val.release());
-                    }
-                    _watchHandler.cancel();
-                    _currentIndex = 0;
-                  });
-                },
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.pause_circle_filled,
-                  size: 40,
+              Visibility(
+                visible: !isAudioPlaying,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.pause_circle_filled,
+                    size: 40,
+                  ),
+                  onPressed: () {
+                    if (isAudioPlaying) {
+                      audioPlayer.then((AudioPlayer val) => val.pause());
+                      isAudioPlaying = false;
+                    }
+                    // TODO: Implement pause functionality
+                  },
                 ),
-                onPressed: () {
-                  if (isAudioPlaying) {
-                    audioPlayer.then((AudioPlayer val) => val.pause());
-                    isAudioPlaying = false;
-                  }
-                  // TODO: Implement pause functionality
-                },
+              ),
+              Visibility(
+                visible: isAudioPlaying,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.stop,
+                    size: 50,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (audioPlayer != null) {
+                        audioPlayer.then((AudioPlayer val) => val.release());
+                      }
+                      isAudioPlaying = false;
+                      _watchHandler.cancel();
+                      _currentIndex = 0;
+                    });
+                  },
+                ),
               )
             ],
           )

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'timerView.dart';
-import 'stopWatchView.dart';
+import 'TimerPage.dart';
+import 'StopwatchPage.dart';
 
 class TabPage extends StatefulWidget {
   @override
@@ -9,7 +9,7 @@ class TabPage extends StatefulWidget {
 
 class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
   TabController _tabController;
-  var _tabPages = <Widget>[TimerPage(), StopWatchPage()];
+  var _tabPages = <Widget>[StopwatchPage(), TimerPage()];
 
   @override
   void initState() {

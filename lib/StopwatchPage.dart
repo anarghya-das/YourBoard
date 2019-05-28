@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'tabPage.dart';
 
-class TimerPage extends StatefulWidget {
+class StopwatchPage extends StatefulWidget {
   @override
-  _TimerPageState createState() => _TimerPageState();
+  _StopwatchPageState createState() => _StopwatchPageState();
 }
 
-class _TimerPageState extends State<TimerPage>
+class _StopwatchPageState extends State<StopwatchPage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   static const duration = const Duration(milliseconds: 1);
   int _seconds = 0;
