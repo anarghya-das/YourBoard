@@ -29,7 +29,7 @@ class _TimerPageState extends State<TimerPage>
   Timer _watchHandler;
   static AudioCache player = new AudioCache();
   Future<AudioPlayer> audioPlayer;
-  bool isAudioPlaying = false;
+  bool isAudioPlaying = false, isPaused = false;
   FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   TextStyle _check(String time) {
@@ -88,11 +88,13 @@ class _TimerPageState extends State<TimerPage>
         if (isAudioPlaying) {
           showNotification();
         }
+        isPaused = true;
         break;
       case AppLifecycleState.resumed:
         if (isAudioPlaying) {
           hideNotification();
         }
+        isPaused = false;
         break;
       case AppLifecycleState.inactive:
         break;
@@ -195,7 +197,7 @@ class _TimerPageState extends State<TimerPage>
                   shrinkWrap: true,
                   padding: EdgeInsets.only(left: 30, top: 30, right: 30),
                   crossAxisCount: 3,
-                  crossAxisSpacing: 50.0,
+                  crossAxisSpacing: 70.0,
                   mainAxisSpacing: 0.0,
                   children: _fillGrid(),
                 ),
@@ -223,9 +225,10 @@ class _TimerPageState extends State<TimerPage>
                           if (timer.tick == duration.inSeconds) {
                             audioPlayer = player.loop("alarm.wav");
                             timer.cancel();
-                            setState(() {
-                              isAudioPlaying = true;
-                            });
+                            isAudioPlaying = true;
+                            if (isPaused) {
+                              showNotification();
+                            }
                           }
                           setState(() {
                             if (_seconds == 0 && _minutes != 0) {
@@ -452,7 +455,7 @@ class _TimerPageState extends State<TimerPage>
           },
           child: Text(
             "$i",
-            style: TextStyle(fontSize: i == "DEL" ? 28 : 40),
+            style: TextStyle(fontSize: i == "DEL" ? 21 : 40),
           )));
     });
     return all;
