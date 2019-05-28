@@ -359,21 +359,27 @@ class _TimerPageState extends State<TimerPage>
     if (i == "DEL") {
       if (_isSelectedH) {
         if (_hour0 != "0") {
+          String _temp = _hour0;
           _hour0 = "0";
+          _hour1 = _temp;
         } else {
           _hour1 = "0";
         }
       }
       if (_isSelectedM) {
         if (_minute0 != "0") {
+          String _temp = _minute0;
           _minute0 = "0";
+          _minute1 = _temp;
         } else {
           _minute1 = "0";
         }
       }
       if (_isSelectedS) {
         if (_second0 != "0") {
+          String _temp = _second0;
           _second0 = "0";
+          _second1 = _temp;
         } else {
           _second1 = "0";
         }
