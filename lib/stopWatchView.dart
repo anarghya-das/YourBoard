@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class StopWatchPage extends StatefulWidget {
   @override
@@ -24,6 +26,9 @@ class _StopWatchPageState extends State<StopWatchPage>
   int _hours = 0, _minutes = 0, _seconds = 0;
   Duration duration;
   Timer _watchHandler;
+  static AudioCache player = new AudioCache();
+  Future<AudioPlayer> audioPlayer;
+  bool isAudioPlaying = false;
 
   TextStyle _check(String time) {
     if (time == "hour" && _isSelectedH) {
@@ -156,6 +161,8 @@ class _StopWatchPageState extends State<StopWatchPage>
                         _watchHandler =
                             Timer.periodic(Duration(seconds: 1), (timer) {
                           if (timer.tick == duration.inSeconds) {
+                            audioPlayer = player.loop("alarm.wav");
+                            isAudioPlaying = true;
                             timer.cancel();
                           }
                           setState(() {
@@ -204,6 +211,9 @@ class _StopWatchPageState extends State<StopWatchPage>
                 ),
                 onPressed: () {
                   setState(() {
+                    if (audioPlayer != null) {
+                      audioPlayer.then((AudioPlayer val) => val.release());
+                    }
                     _watchHandler.cancel();
                     _currentIndex = 0;
                   });
@@ -215,6 +225,10 @@ class _StopWatchPageState extends State<StopWatchPage>
                   size: 40,
                 ),
                 onPressed: () {
+                  if (isAudioPlaying) {
+                    audioPlayer.then((AudioPlayer val) => val.pause());
+                    isAudioPlaying = false;
+                  }
                   // TODO: Implement pause functionality
                 },
               )
