@@ -41,6 +41,12 @@ class _StopWatchPageState extends State<StopWatchPage>
     return null;
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _changeBool("second");
+  }
+
   void _changeBool(String time) {
     switch (time) {
       case "hour":
