@@ -5,6 +5,8 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'CreateTask.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:random_string/random_string.dart';
+import 'package:crypto/crypto.dart';
 
 const String API_URL = "http://10.0.2.2:8000/api/list/";
 const String PREFERENCE_TITLE = "ListTitle";
@@ -54,7 +56,8 @@ class _ListRootState extends State<ListRoot> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CreateTask("", "", 0)));
+                      builder: (context) =>
+                          CreateTask("", "", 0))); // ! Add the userID
             }),
         backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
@@ -131,6 +134,35 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
+  String _secretUserId;
+  String _encodedUserId;
+
+  Future<void> _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    _secretUserId = prefs.getString("userId");
+    if (_secretUserId == null) {
+      _secretUserId = randomAlphaNumeric(255);
+      _storePreference(_secretUserId);
+    }
+    _createEncodedId(_secretUserId);
+  }
+
+  Future<void> _storePreference(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("userId", value);
+  }
+
+  void _createEncodedId(String id) {
+    var bytes = utf8.encode(id);
+    _encodedUserId = sha1.convert(bytes).toString();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserId();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -185,14 +217,14 @@ class _TaskListState extends State<TaskList> {
   }
 
   Future<List<List<Task>>> getTaskList() async {
-    final response = await get(API_URL);
+    final response = await get(API_URL + '?user_id=' + _encodedUserId);
     final jsonResponse = json.decode(response.body);
     List<Task> allTasks = List();
     List<Task> completedTasks = List();
     List<List<Task>> both = List();
     for (var items in jsonResponse) {
-      Task task = Task(
-          items['title'], items['content'], items['isComplete'], items['id']);
+      Task task = Task(items['title'], items['content'], items['isComplete'],
+          items['id'], items['user_id']);
       if (task.isComplete) {
         completedTasks.add(task);
       } else {
@@ -273,6 +305,7 @@ class _TaskListState extends State<TaskList> {
                   },
                   onTap: () {
                     var msg = Map<String, String>();
+                    msg['user_id'] = _encodedUserId;
                     msg['title'] = val.getTitle();
                     msg['id'] = "${val.getId()}";
                     msg['isComplete'] = "false";
@@ -310,6 +343,7 @@ class _TaskListState extends State<TaskList> {
           direction: DismissDirection.startToEnd,
           onDismissed: (direction) {
             var msg = Map<String, String>();
+            msg['user_id'] = _encodedUserId;
             msg['title'] = _items[i].getTitle();
             msg['id'] = "${_items[i].getId()}";
             msg['isComplete'] = "true";

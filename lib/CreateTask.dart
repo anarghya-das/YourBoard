@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const String API_URL = "http://10.0.2.2:8000/api/list/";
 
@@ -43,16 +46,27 @@ class Form extends StatefulWidget {
 }
 
 class _FormState extends State<Form> {
-  String heading, body;
+  String heading, body, userID;
   int id;
   TextEditingController _headingController;
   TextEditingController _bodyController;
 
   _FormState(this.heading, this.body, this.id);
 
+  Future<void> _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    _createEncodedId(prefs.getString("userId"));
+  }
+
+  void _createEncodedId(String id) {
+    var bytes = utf8.encode(id);
+    userID = sha1.convert(bytes).toString();
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadUserId();
     _headingController = TextEditingController(text: heading);
     _bodyController = TextEditingController(text: body);
   }
@@ -94,6 +108,7 @@ class _FormState extends State<Form> {
                   content: Text("Both Fields cannot be empty"),
                 ));
               } else {
+                msg['user_id'] = userID;
                 msg['title'] = _title;
                 msg['content'] = _content;
                 if (heading.isEmpty) {
