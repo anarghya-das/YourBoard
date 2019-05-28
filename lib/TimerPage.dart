@@ -30,6 +30,7 @@ class _TimerPageState extends State<TimerPage>
   static AudioCache player = new AudioCache();
   Future<AudioPlayer> audioPlayer;
   bool isAudioPlaying = false, isPaused = false;
+  bool _timerPaused = false;
   FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   TextStyle _check(String time) {
@@ -213,37 +214,7 @@ class _TimerPageState extends State<TimerPage>
                         size: 60,
                       ),
                       onPressed: () {
-                        _hours = int.parse(_hour0 + _hour1);
-                        _minutes = int.parse(_minute0 + _minute1);
-                        _seconds = int.parse(_second0 + _second1);
-                        duration = Duration(
-                            hours: _hours,
-                            minutes: _minutes,
-                            seconds: _seconds);
-                        _watchHandler =
-                            Timer.periodic(Duration(seconds: 1), (timer) {
-                          if (timer.tick == duration.inSeconds) {
-                            audioPlayer = player.loop("alarm.wav");
-                            timer.cancel();
-                            isAudioPlaying = true;
-                            if (isPaused) {
-                              showNotification();
-                            }
-                          }
-                          setState(() {
-                            if (_seconds == 0 && _minutes != 0) {
-                              _seconds = 60;
-                              _minutes--;
-                            }
-                            if (_seconds == 0 && _minutes == 0 && _hours != 0) {
-                              _seconds = 60;
-                              _minutes = 60;
-                              _minutes--;
-                              _hours--;
-                            }
-                            _seconds--;
-                          });
-                        });
+                        _timerHelper();
                         setState(() {
                           _currentIndex = 1;
                         });
@@ -258,6 +229,38 @@ class _TimerPageState extends State<TimerPage>
         watchView()
       ],
     );
+  }
+
+  void _timerHelper() {
+    if (!_timerPaused) {
+      _hours = int.parse(_hour0 + _hour1);
+      _minutes = int.parse(_minute0 + _minute1);
+      _seconds = int.parse(_second0 + _second1);
+    }
+    duration = Duration(hours: _hours, minutes: _minutes, seconds: _seconds);
+    _watchHandler = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (timer.tick == duration.inSeconds) {
+        audioPlayer = player.loop("alarm.wav");
+        timer.cancel();
+        isAudioPlaying = true;
+        if (isPaused) {
+          showNotification();
+        }
+      }
+      setState(() {
+        if (_seconds == 0 && _minutes != 0) {
+          _seconds = 60;
+          _minutes--;
+        }
+        if (_seconds == 0 && _minutes == 0 && _hours != 0) {
+          _seconds = 60;
+          _minutes = 60;
+          _minutes--;
+          _hours--;
+        }
+        _seconds--;
+      });
+    });
   }
 
   Widget watchView() {
@@ -277,8 +280,9 @@ class _TimerPageState extends State<TimerPage>
                     size: 40,
                   ),
                   onPressed: () {
+                    _watchHandler.cancel();
+                    _timerPaused = false;
                     setState(() {
-                      _watchHandler.cancel();
                       _currentIndex = 0;
                     });
                   },
@@ -287,17 +291,26 @@ class _TimerPageState extends State<TimerPage>
               Visibility(
                 visible: !isAudioPlaying,
                 child: IconButton(
-                  icon: Icon(
-                    Icons.pause_circle_filled,
-                    size: 40,
-                  ),
-                  onPressed: () {
-                    if (isAudioPlaying) {
-                      audioPlayer.then((AudioPlayer val) => val.pause());
-                      isAudioPlaying = false;
-                    }
-                    // TODO: Implement pause functionality
-                  },
+                  icon: _timerPaused
+                      ? Icon(
+                          Icons.play_circle_filled,
+                          size: 40,
+                        )
+                      : Icon(
+                          Icons.pause_circle_filled,
+                          size: 40,
+                        ),
+                  onPressed: _timerPaused
+                      ? () {
+                          _timerPaused = false;
+                          _timerHelper();
+                        }
+                      : () {
+                          _watchHandler.cancel();
+                          setState(() {
+                            _timerPaused = true;
+                          });
+                        },
                 ),
               ),
               Visibility(
