@@ -95,56 +95,58 @@ class _BoardState extends State<Board> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
+    return Align(
+      alignment: Alignment.center,
+      child: Stack(
+        alignment: Alignment.center,
         children: <Widget>[
-          Stack(
-            alignment: Alignment.topCenter,
-            children: <Widget>[
-              Card(
-                margin: EdgeInsets.only(top: 100),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
-                ),
-                child: GridView.count(
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(20.0),
-                  crossAxisSpacing: 10.0,
-                  crossAxisCount: 2,
-                  children: <Widget>[
-                    IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TabPage()));
-                        },
-                        icon: Icon(Icons.timer, size: 90)),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ListRoot()));
-                        },
-                        icon: Icon(Icons.list, size: 90)),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                    onTap: () {
-                      getImage(ImageSource.gallery);
+          Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+            ),
+            child: GridView.count(
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              crossAxisSpacing: 0.0,
+              crossAxisCount: 2,
+              children: <Widget>[
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => TabPage()));
                     },
-                    child: showImage()),
-              )
-            ],
+                    icon: Icon(Icons.timer, size: 90)),
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => ListRoot()));
+                    },
+                    icon: Icon(Icons.list, size: 90)),
+              ],
+            ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 300.0),
+            child: GestureDetector(
+                onTap: () {
+                  getImage(ImageSource.gallery);
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    showImage(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Text(
+                        "Hi, Anarghya!",
+                        style: TextStyle(fontSize: 22),
+                      ),
+                    )
+                  ],
+                )),
+          )
         ],
       ),
     );
