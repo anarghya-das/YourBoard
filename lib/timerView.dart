@@ -71,6 +71,9 @@ class _TimerPageState extends State<TimerPage>
         }
         break;
       case AppLifecycleState.resumed:
+        if (!_notStarted) {
+          hideNotification();
+        }
         break;
       case AppLifecycleState.inactive:
         break;
@@ -181,6 +184,10 @@ class _TimerPageState extends State<TimerPage>
     var ios = IOSNotificationDetails();
     var platform = NotificationDetails(android, ios);
     await _flutterLocalNotificationsPlugin.show(
-        0, "Timer Running", null, platform);
+        0, "Stopwatch Running", null, platform);
+  }
+
+  Future hideNotification() async {
+    await _flutterLocalNotificationsPlugin.cancel(0);
   }
 }

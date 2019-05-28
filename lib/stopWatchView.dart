@@ -3,6 +3,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'tabPage.dart';
 
 class StopWatchPage extends StatefulWidget {
   @override
@@ -10,7 +12,7 @@ class StopWatchPage extends StatefulWidget {
 }
 
 class _StopWatchPageState extends State<StopWatchPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   String _hour0 = "0",
       _hour1 = "0",
       _minute0 = "0",
@@ -29,6 +31,7 @@ class _StopWatchPageState extends State<StopWatchPage>
   static AudioCache player = new AudioCache();
   Future<AudioPlayer> audioPlayer;
   bool isAudioPlaying = false;
+  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   TextStyle _check(String time) {
     if (time == "hour" && _isSelectedH) {
@@ -44,7 +47,59 @@ class _StopWatchPageState extends State<StopWatchPage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _changeBool("second");
+    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var ios = IOSInitializationSettings();
+    var initSettings = InitializationSettings(android, ios);
+    _flutterLocalNotificationsPlugin.initialize(initSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future<void> onSelectNotification(String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+    }
+    await Navigator.maybePop(
+      context,
+      MaterialPageRoute(builder: (context) => TabPage()),
+    );
+  }
+
+  Future showNotification() async {
+    var android = AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DISCRIPTION',
+        importance: Importance.Max, priority: Priority.High, playSound: false);
+    var ios = IOSNotificationDetails();
+    var platform = NotificationDetails(android, ios);
+    await _flutterLocalNotificationsPlugin.show(
+        0, "Timer", "Time is up!", platform);
+  }
+
+  Future hideNotification() async {
+    await _flutterLocalNotificationsPlugin.cancel(0);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint("State: ${state.toString()}");
+    switch (state) {
+      case AppLifecycleState.paused:
+        if (isAudioPlaying) {
+          showNotification();
+        }
+        break;
+      case AppLifecycleState.resumed:
+        if (isAudioPlaying) {
+          hideNotification();
+        }
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.suspending:
+        break;
+    }
   }
 
   void _changeBool(String time) {
@@ -168,8 +223,10 @@ class _StopWatchPageState extends State<StopWatchPage>
                             Timer.periodic(Duration(seconds: 1), (timer) {
                           if (timer.tick == duration.inSeconds) {
                             audioPlayer = player.loop("alarm.wav");
-                            isAudioPlaying = true;
                             timer.cancel();
+                            setState(() {
+                              isAudioPlaying = true;
+                            });
                           }
                           setState(() {
                             if (_seconds == 0 && _minutes != 0) {
