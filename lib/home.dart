@@ -14,6 +14,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           elevation: 1,
           centerTitle: true,
@@ -35,6 +36,9 @@ class Board extends StatefulWidget {
 class _BoardState extends State<Board> {
   Future<File> _profileImage;
   File _storedImage;
+  String _userName = "Enter your name!";
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _textEditingController;
 
   Future<File> _getStoredFile() async {
     final prefs = await SharedPreferences.getInstance();
@@ -57,9 +61,31 @@ class _BoardState extends State<Board> {
     setState(() {});
   }
 
+  Future<String> _getName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString("userName");
+    if (name == null) {
+      return "Enter your name!";
+    } else {
+      return name;
+    }
+  }
+
+  Future<void> _loadName() async {
+    _userName = await _getName();
+    setState(() {});
+  }
+
+  Future<void> _storeName(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("userName", value);
+  }
+
   @override
   void initState() {
     _loadImage();
+    _loadName();
+    _textEditingController = TextEditingController();
     super.initState();
   }
 
@@ -129,23 +155,67 @@ class _BoardState extends State<Board> {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 300.0),
-            child: GestureDetector(
-                onTap: () {
-                  getImage(ImageSource.gallery);
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    showImage(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Text(
-                        "Hi, Anarghya!",
-                        style: TextStyle(fontSize: 22),
-                      ),
-                    )
-                  ],
-                )),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                GestureDetector(
+                    onTap: () {
+                      getImage(ImageSource.gallery);
+                    },
+                    child: showImage()),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext contex) {
+                            return AlertDialog(
+                              title: Text("Name"),
+                              content: Form(
+                                key: _formKey,
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return "Please enter your name!";
+                                    }
+                                  },
+                                  controller: _textEditingController,
+                                  decoration: InputDecoration(
+                                      hintText: "Enter your name"),
+                                ),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text("Confirm"),
+                                  onPressed: () {
+                                    if (_formKey.currentState.validate()) {
+                                      _storeName(_textEditingController.text);
+                                      setState(() {
+                                        _userName = _textEditingController.text;
+                                      });
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
+                                ),
+                                FlatButton(
+                                  child: Text("Cancel"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            );
+                          });
+                    },
+                    child: Text(
+                      "Hi, $_userName",
+                      style: TextStyle(fontSize: 22),
+                    ),
+                  ),
+                )
+              ],
+            ),
           )
         ],
       ),
