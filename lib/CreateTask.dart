@@ -31,21 +31,21 @@ class _CreateTaskState extends State<CreateTask> {
           centerTitle: true,
           title: heading.isEmpty ? Text("Create Task") : Text("Update Task"),
         ),
-        body: Form(heading, body, id));
+        body: TaskView(heading, body, id));
   }
 }
 
-class Form extends StatefulWidget {
+class TaskView extends StatefulWidget {
   final String heading, body;
   final int id;
 
-  Form(this.heading, this.body, this.id);
+  TaskView(this.heading, this.body, this.id);
 
   @override
   _FormState createState() => _FormState(heading, body, id);
 }
 
-class _FormState extends State<Form> {
+class _FormState extends State<TaskView> {
   String heading, body, userID;
   int id;
   TextEditingController _headingController;

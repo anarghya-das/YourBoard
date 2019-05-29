@@ -19,6 +19,7 @@ class ListRoot extends StatefulWidget {
 class _ListRootState extends State<ListRoot> {
   TextEditingController _textEditingController;
   String title = "Enter List Title";
+  final _formKey = GlobalKey<FormState>();
 
   Future<String> _getListTitle() async {
     final prefs = await SharedPreferences.getInstance();
@@ -56,8 +57,7 @@ class _ListRootState extends State<ListRoot> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          CreateTask("", "", 0))); // ! Add the userID
+                      builder: (context) => CreateTask("", "", 0)));
             }),
         backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
@@ -70,20 +70,30 @@ class _ListRootState extends State<ListRoot> {
                   builder: (BuildContext contex) {
                     return AlertDialog(
                       title: Text("Rename List"),
-                      content: TextField(
-                        controller: _textEditingController,
-                        decoration:
-                            InputDecoration(hintText: "Enter your title"),
+                      content: Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Please enter a title!";
+                            }
+                          },
+                          controller: _textEditingController,
+                          decoration:
+                              InputDecoration(hintText: "Enter your title"),
+                        ),
                       ),
                       actions: <Widget>[
                         FlatButton(
                           child: Text("Confirm"),
                           onPressed: () {
-                            _storeTitle(_textEditingController.text);
-                            setState(() {
-                              title = _textEditingController.text;
-                            });
-                            Navigator.of(context).pop();
+                            if (_formKey.currentState.validate()) {
+                              _storeTitle(_textEditingController.text);
+                              setState(() {
+                                title = _textEditingController.text;
+                              });
+                              Navigator.of(context).pop();
+                            }
                           },
                         ),
                         FlatButton(
