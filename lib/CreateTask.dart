@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String API_URL = "http://10.0.2.2:8000/api/list/";
+// const String API_URL = "http://10.0.2.2:8000/api/list/";
+const String API_URL = "https://yb-server.appspot.com/api/list/";
 
 class CreateTask extends StatefulWidget {
   final String heading, body;

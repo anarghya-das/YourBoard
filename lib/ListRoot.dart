@@ -8,7 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:random_string/random_string.dart';
 import 'package:crypto/crypto.dart';
 
-const String API_URL = "http://10.0.2.2:8000/api/list/";
+// const String API_URL = "http://10.0.2.2:8000/api/list/";
+const String API_URL = "https://yb-server.appspot.com/api/list/";
+
 const String PREFERENCE_TITLE = "ListTitle";
 
 class ListRoot extends StatefulWidget {
