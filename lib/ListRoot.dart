@@ -9,9 +9,11 @@ import 'package:random_string/random_string.dart';
 import 'package:crypto/crypto.dart';
 
 // const String API_URL = "http://10.0.2.2:8000/api/list/";
-const String API_URL = "https://yb-server.appspot.com/api/list/";
+const String API_URL =
+    "https://yb-server.appspot.com/api/list/"; // * API DATABASE URL from where the app fetches the task list
 
-const String PREFERENCE_TITLE = "ListTitle";
+const String PREFERENCE_TITLE =
+    "ListTitle"; // * Name of the SharedPreference which stores the application name
 
 class ListRoot extends StatefulWidget {
   @override
@@ -149,6 +151,8 @@ class _TaskListState extends State<TaskList> {
   String _secretUserId;
   String _encodedUserId;
 
+// * Loads the userID from the preference, if no preference found then creates a user id as an alphaNumeric value
+// * and stores it in the preference.
   Future<void> _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
     _secretUserId = prefs.getString("userId");
@@ -228,6 +232,7 @@ class _TaskListState extends State<TaskList> {
         ));
   }
 
+// * GETs the list of tasks from the API and displays the UI using the Future Builder
   Future<List<List<Task>>> getTaskList() async {
     final response = await get(API_URL + '?user_id=' + _encodedUserId);
     final jsonResponse = json.decode(response.body);
@@ -248,6 +253,7 @@ class _TaskListState extends State<TaskList> {
     return both;
   }
 
+// * Creates the seperated list view for each task form the API
   Widget createTaskList(BuildContext context, AsyncSnapshot snapshot) {
     List<List<Task>> _bothItems = snapshot.data;
     List<Task> _items = _bothItems[0];

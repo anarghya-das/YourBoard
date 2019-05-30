@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'tabPage.dart';
 
+// * Stopwatch view
 class StopwatchPage extends StatefulWidget {
   @override
   _StopwatchPageState createState() => _StopwatchPageState();
 }
 
+// * Wrap the class with AutomaticKeepAliveClientMixin to ensure it does not die when the user swipes away
+// * and WidgetsBindingObserver to check when the application was paused or resumed to display notifications.
 class _StopwatchPageState extends State<StopwatchPage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
-  static const duration = const Duration(milliseconds: 1);
+  static const duration = const Duration(milliseconds: 1); // * Timer duration which updates the UI every 1 ms
   int _seconds = 0;
   int _milliseconds = 0;
   int _minutes = 0;
@@ -80,6 +83,20 @@ class _StopwatchPageState extends State<StopwatchPage>
       case AppLifecycleState.suspending:
         break;
     }
+  }
+
+  Future showNotification() async {
+    var android = AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DISCRIPTION',
+        importance: Importance.Max, priority: Priority.High, playSound: false);
+    var ios = IOSNotificationDetails();
+    var platform = NotificationDetails(android, ios);
+    await _flutterLocalNotificationsPlugin.show(
+        0, "Stopwatch Running", null, platform);
+  }
+
+  Future hideNotification() async {
+    await _flutterLocalNotificationsPlugin.cancel(0);
   }
 
   @override
@@ -175,19 +192,5 @@ class _StopwatchPageState extends State<StopwatchPage>
         ),
       ],
     ));
-  }
-
-  Future showNotification() async {
-    var android = AndroidNotificationDetails(
-        'channel id', 'channel NAME', 'CHANNEL DISCRIPTION',
-        importance: Importance.Max, priority: Priority.High, playSound: false);
-    var ios = IOSNotificationDetails();
-    var platform = NotificationDetails(android, ios);
-    await _flutterLocalNotificationsPlugin.show(
-        0, "Stopwatch Running", null, platform);
-  }
-
-  Future hideNotification() async {
-    await _flutterLocalNotificationsPlugin.cancel(0);
   }
 }

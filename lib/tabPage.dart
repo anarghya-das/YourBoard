@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'TimerPage.dart';
 import 'StopwatchPage.dart';
 
+// * Tab page to display both countdown Timer and Stopwatch. Used a tab so that the user could easily swipe between the two views.
 class TabPage extends StatefulWidget {
   @override
   _TimerState createState() => _TimerState();
 }
 
+// * Wrap the class with SingleTickerProviderStateMixin to use the Tab View
 class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  var _tabPages = <Widget>[StopwatchPage(), TimerPage()];
+  TabController
+      _tabController; // *Tab controller helps to swtich tabs, get tab title, etc.
+  var _tabPages = <Widget>[
+    StopwatchPage(),
+    TimerPage()
+  ]; // * Pages displayed on this Tab View
 
   @override
   void initState() {
@@ -18,14 +24,14 @@ class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
     _tabController.addListener(_handleSelected);
   }
 
-  void _handleSelected() {
-    setState(() {});
-  }
-
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _handleSelected() {
+    setState(() {});
   }
 
   @override
@@ -35,7 +41,7 @@ class _TimerState extends State<TabPage> with SingleTickerProviderStateMixin {
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
-          title: _tabController.index == 0
+          title: _tabController.index == 0 // * Dynamically switches the title based on the tab
               ? Text("Stopwatch")
               : Text("Countdown Timer"),
         ),

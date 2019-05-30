@@ -1,3 +1,4 @@
+// * Template Task class to store the title, content, status, id and userId realted to a particular task.
 class Task {
   int id;
   String userId, title, content;

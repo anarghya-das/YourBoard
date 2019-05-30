@@ -17,6 +17,7 @@ class CreateTask extends StatefulWidget {
   _CreateTaskState createState() => _CreateTaskState(heading, body, id);
 }
 
+// * Used to add a new Task and updates the API accordingly
 class _CreateTaskState extends State<CreateTask> {
   final String heading, body;
   final int id;
