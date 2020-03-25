@@ -105,7 +105,7 @@ class _TimerPageState extends State<TimerPage>
         break;
       case AppLifecycleState.inactive:
         break;
-      case AppLifecycleState.suspending:
+      case AppLifecycleState.detached:
         break;
     }
   }

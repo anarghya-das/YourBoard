@@ -13,7 +13,8 @@ class StopwatchPage extends StatefulWidget {
 // * and WidgetsBindingObserver to check when the application was paused or resumed to display notifications.
 class _StopwatchPageState extends State<StopwatchPage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
-  static const duration = const Duration(milliseconds: 1); // * Timer duration which updates the UI every 1 ms
+  static const duration = const Duration(
+      milliseconds: 1); // * Timer duration which updates the UI every 1 ms
   int _seconds = 0;
   int _milliseconds = 0;
   int _minutes = 0;
@@ -80,7 +81,7 @@ class _StopwatchPageState extends State<StopwatchPage>
         break;
       case AppLifecycleState.inactive:
         break;
-      case AppLifecycleState.suspending:
+      case AppLifecycleState.detached:
         break;
     }
   }
